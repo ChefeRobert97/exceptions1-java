@@ -37,17 +37,17 @@ public class VeryBadVersion {
 			System.out.print("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
 			
-			if (!checkOut.after(checkIn)) {
-				System.out.println("Error in reservation: Check-out date must beafter check-in date");
+			
+			String error = reservation.updateDates(checkIn, checkOut);
+			if (error != null) {
+				System.out.println(error);
+	
 			}
-			else if (!checkIn.after(reservation.getCheckIn()) || !checkOut.after(reservation.getCheckOut())) {
-				System.out.println("Error in reservation: Reservation dates for update must be future dates");
-			}
-
 			else {
-				reservation.updateDates(checkIn, checkOut);
 				System.out.println(reservation);
+
 			}
+			
 		}
 
 		sc.close();
