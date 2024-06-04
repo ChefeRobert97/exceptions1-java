@@ -3,6 +3,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -16,6 +18,9 @@ public class Reservation {
 	}
 	
 	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+		if (!checkOut.after(checkIn)) {
+			throw new DomainException("Error in reservation: Check-out date must beafter check-in date");
+		}
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -43,18 +48,20 @@ public class Reservation {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);	
 	}
 
-	public String updateDates(Date checkIn2, Date checkOut2) {
+	public void updateDates(Date checkIn2, Date checkOut2) {
 		if (!checkIn2.after(checkIn) || !checkOut2.after(checkOut)) {
-			return "Error in reservation: Reservation dates for update must be future dates";
+			throw new DomainException("Error in reservation: Reservation dates for update must be future dates");
 		}
 		if (!checkOut2.after(checkIn2)) {
-			return "Error in reservation: Check-out date must beafter check-in date";
+			throw new DomainException("Error in reservation: Check-out date must beafter check-in date");
 		}
-		
+		// • Cláusula throws: propaga a exceção ao invés de trata-la
+		// • Cláusula throw: lança a exceção / "corta" o método
+		// IllegalArgumentException é usada quando os argumentos que passamos para o método são inválidos
+		// DomainException exceção personalizada 
+
 		checkIn = checkIn2;
 		checkOut = checkOut2;
-
-		return null;
 	}
 
 	@Override
